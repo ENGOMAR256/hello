@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridge Micro Saving | Ultra-Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5; --primary-dark: #3730a3; --primary-light: #e0e7ff;
+            --accent: #d97706; --accent-light: #fef3c7;
+            --success: #059669; --success-bg: #d1fae5;
+            --danger: #dc2626; --danger-bg: #fee2e2;
+            --warning: #d97706; --warning-bg: #fef3c7;
+            --bg: #f8fafc; --surface: #ffffff; --surface-hover: #f1f5f9;
+            --text: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 20px 40px -10px rgba(79, 70, 229, 0.15), 0 10px 20px -5px rgba(0, 0, 0, 0.05);
+        }
+        [data-theme="dark"] {
+            --bg: #020617; --surface: #0f172a; --surface-hover: #1e293b;
+            --text: #f8fafc; --text-secondary: #cbd5e1; --text-muted: #64748b;
+            --border: #1e293b; --primary-light: #1e1b4b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.3s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; opacity: 0.5; }
+
+        /* --- PREMIUM SPLIT-SCREEN LOGIN --- */
+        #loginScreen { position: fixed; inset: 0; background: #f8fafc; display: flex; align-items: center; justify-content: center; z-index: 9999; overflow: hidden; }
+        [data-theme="dark"] #loginScreen { background: #020617; }
+        .login-container { display: flex; width: 90%; max-width: 1100px; min-height: 650px; background: var(--surface); border-radius: 28px; overflow: hidden; box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.05); }
+        .login-brand { flex: 1.2; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%); color: white; padding: 4rem; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+        .login-brand::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .brand-content { position: relative; z-index: 2; }
+        .brand-content .logo-icon { margin-bottom: 2rem; }
+        .brand-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -1px; }
+        .brand-content p { font-size: 1.1rem; opacity: 0.9; line-height: 1.6; margin-bottom: 2.5rem; }
+        .brand-features { display: flex; flex-direction: column; gap: 1.25rem; }
+        .feature { display: flex; align-items: center; gap: 1rem; font-size: 1rem; font-weight: 500; }
+        .feature i { width: 40px; height: 40px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .login-form-side { flex: 1; padding: 4rem; display: flex; align-items: center; justify-content: center; background: var(--surface); }
+        .login-box { width: 100%; max-width: 400px; }
+        .login-box h2 { font-size: 2rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+        .login-box > p { color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; }
+        .login-box input { width: 100%; margin-bottom: 1.25rem; padding: 1rem 1.25rem; background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; font-size: 1rem; color: var(--text); font-weight: 500; }
+        .login-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); background: var(--surface); }
+        .login-box button { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 14px; font-size: 1.05rem; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); }
+        .login-box button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4); }
+        .demo-creds { margin-top: 2.5rem; font-size: 0.85rem; color: var(--text-secondary); text-align: left; background: var(--bg); padding: 1.25rem; border-radius: 16px; border: 1px solid var(--border); }
+        .demo-creds b { color: var(--text); }
+        .demo-creds .role-tag { display: inline-block; width: 80px; font-weight: 700; color: var(--primary); }
+        @media (max-width: 900px) { .login-container { flex-direction: column; min-height: auto; width: 95%; } .login-brand { display: none; } .login-form-side { padding: 2.5rem; } }
+
+        /* --- APP LAYOUT --- */
+        #appContainer { display: none; flex-direction: column; min-height: 100vh; }
+        header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        [data-theme="dark"] header { background: rgba(15, 23, 42, 0.8); }
+        .brand-wrap { display: flex; align-items: center; gap: 1rem; }
+        .logo-icon { height: 44px; width: 44px; background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3); }
+        .logo-icon.large { height: 64px; width: 64px; font-size: 1.8rem; }
+        .header-meta { color: var(--text-muted); font-size: 0.8rem; margin-top: 2px; font-weight: 500; }
+        .role-badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; }
+        .role-badge.admin { background: var(--primary-light); color: var(--primary); }
+        .role-badge.treasurer { background: var(--warning-bg); color: var(--warning); }
+        .role-badge.member { background: var(--surface-hover); color: var(--text-secondary); border: 1px solid var(--border); }
+        .layout { display: flex; flex: 1; }
+        .sidebar { width: 280px; background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .sidebar button { width: 100%; text-align: left; padding: 0.9rem 1.25rem; border: none; background: transparent; border-radius: 12px; cursor: pointer; color: var(--text-secondary); font-weight: 600; display: flex; align-items: center; gap: 1rem; font-size: 0.95rem; }
+        .sidebar button:hover { background: var(--surface-hover); color: var(--text); transform: translateX(4px); }
+        .sidebar button.active { background: linear-gradient(90deg, var(--primary-light) 0%, transparent 100%); color: var(--primary); border-left: 3px solid var(--primary); }
+        .sidebar button.danger { color: var(--danger); margin-top: auto; }
+        .sidebar button.danger:hover { background: var(--danger-bg); transform: translateX(4px); }
+        .content { flex: 1; padding: 2.5rem; overflow-y: auto; max-height: calc(100vh - 76px); }
+        .page { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--surface); padding: 1.75rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary-light); }
+        .card-premium { border-top: 4px solid var(--primary); }
+        .card-premium.gold { border-top-color: var(--accent); }
+        .card-icon { width: 52px; height: 52px; background: var(--primary-light); color: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1rem; }
+        .card-premium.gold .card-icon { background: var(--accent-light); color: var(--accent); }
+        .label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .value { font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: -1px; }
+        
+        .chart-container { background: var(--surface); padding: 2rem; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 2rem; height: 350px; box-shadow: var(--shadow); }
+        .panel { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .panel-header h2 { font-size: 1.35rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem; color: var(--text); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; align-items: end; }
+        label { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        input, select { padding: 0.85rem 1rem; border: 1px solid var(--border); border-radius: 12px; font-size: 0.95rem; width: 100%; background: var(--bg); color: var(--text); font-weight: 500; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        
+        button.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; padding: 0.85rem 1.75rem; border-radius: 12px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+        button.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35); }
+        button.secondary { background: var(--surface-hover); color: var(--text); border: 1px solid var(--border); padding: 0.75rem 1.5rem; border-radius: 12px; cursor: pointer; font-weight: 600; }
+        button.success-btn { background: var(--success); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        button.danger-btn { background: var(--danger); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        button.export-btn { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); padding: 0.75rem 1.25rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
+        button.export-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+        .table-container { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { padding: 1.25rem 1.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg); font-weight: 700; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--surface-hover); }
+        
+        .status-pending { color: var(--warning); font-weight: 700; background: var(--warning-bg); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; }
+        .status-awaiting { color: var(--primary); font-weight: 700; background: var(--primary-light); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; }
+        .status-completed, .status-approved, .status-active { color: var(--success); font-weight: 700; background: var(--success-bg); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; }
+        .status-rejected, .status-cleared { color: var(--text-muted); font-weight: 700; background: var(--surface-hover); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; border: 1px solid var(--border); }
+
+        #toastContainer { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.75rem; }
+        .toast { background: var(--surface); border-left: 4px solid var(--primary); padding: 1.25rem 1.75rem; border-radius: 16px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 1rem; animation: slideIn 0.4s; min-width: 320px; border: 1px solid var(--border); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9998; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--surface); padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 480px; box-shadow: var(--shadow-lg); text-align: center; border: 1px solid var(--border); }
+        .modal-box h3 { margin-bottom: 0.75rem; font-size: 1.5rem; font-weight: 700; }
+        .modal-box p { color: var(--text-secondary); margin-bottom: 2rem; font-size: 1rem; }
+        .modal-actions { display: flex; gap: 1rem; justify-content: center; }
+        .receipt-box { text-align: left; background: var(--bg); padding: 1.5rem; border-radius: 12px; border: 1px dashed var(--border); margin: 1.5rem 0; font-family: 'Courier New', monospace; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--text-secondary); }
+        .receipt-total { border-top: 2px dashed var(--border); padding-top: 1rem; margin-top: 1rem; font-weight: 800; font-size: 1.25rem; color: var(--text); }
+        .loan-preview { background: linear-gradient(135deg, var(--primary-light) 0%, rgba(255,255,255,0) 100%); border: 1px solid var(--primary); border-radius: 12px; padding: 1.25rem; margin-top: 1rem; display: none; }
+        .loan-preview h4 { color: var(--primary); font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .loan-preview .preview-amount { font-size: 1.75rem; font-weight: 800; color: var(--text); }
+        .password-strength { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+        .password-strength-bar { height: 100%; width: 0%; transition: width 0.3s, background-color 0.3s; border-radius: 2px; }
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); background: var(--surface); }
+        .theme-toggle { background: var(--surface-hover); border: 1px solid var(--border); width: 44px; height: 44px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 1.2rem; }
+        .theme-toggle:hover { background: var(--border); color: var(--text); transform: rotate(15deg); }
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); flex-direction: row; overflow-x: auto; padding: 1rem; gap: 0.5rem; }
+            .sidebar button { white-space: nowrap; padding: 0.75rem 1rem; font-size: 0.85rem; }
+            .sidebar button:hover { transform: none; }
+            .form-grid { grid-template-columns: 1fr; }
+            .header-meta { display: none; }
+            .content { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PREMIUM SPLIT-SCREEN LOGIN -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <div class="login-brand">
+                <div class="brand-content">
+                    <div class="logo-icon large">B</div>
+                    <h1>Bridge Micro Saving</h1>
+                    <p>Empowering your financial future with secure, transparent, and premium micro-saving solutions.</p>
+                    <div class="brand-features">
+                        <div class="feature"><i class="fas fa-shield-alt"></i> Bank-grade Security</div>
+                        <div class="feature"><i class="fas fa-chart-line"></i> Real-time Analytics</div>
+                        <div class="feature"><i class="fas fa-users"></i> Community Driven</div>
+                    </div>
+                </div>
+            </div>
+            <div class="login-form-side">
+                <div class="login-box">
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to access your account</p>
+                    <form id="loginForm">
+                        <input type="text" id="loginUsername" placeholder="Username" required autocomplete="off">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <button type="submit"><i class="fas fa-fingerprint"></i> Secure Login</button>
+                    </form>
+                    <div class="demo-creds">
+                        <b style="color: var(--primary); display: block; margin-bottom: 0.75rem; font-size: 0.9rem;">System Credentials:</b>
+                        <div><span class="role-tag">👑 Admin:</span> <b>lubega</b> / <b>admin123</b></div>
+                        <div><span class="role-tag">💼 Treas:</span> <b>mercy</b> / <b>treasurer123</b></div>
+                        <div><span class="role-tag">👤 Member:</span> <b>kimera</b> / <b>member123</b></div>
+                        <div><span class="role-tag">👤 Member:</span> <b>auntbetty</b> / <b>member123</b></div>
+                        <div><span class="role-tag">👤 Member:</span> <b>wankya</b> / <b>member123</b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="appContainer">
+        <header>
+            <div class="brand-wrap">
+                <div class="logo-icon">B</div>
+                <div>
+                    <h1 style="font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px;">Bridge Micro Saving</h1>
+                    <div class="header-meta">Enterprise-Grade Financial Operations</div>
+                </div>
+            </div>
+            <div class="user-actions" style="display: flex; align-items: center; gap: 1.25rem;">
+                <button class="theme-toggle" id="themeToggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+                <div style="text-align: right;">
+                    <div id="currentUserDisplay" style="font-weight: 700; font-size: 0.95rem;"></div>
+                </div>
+                <button id="logoutButton" class="secondary" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <nav>
+                    <button class="active" data-page="page-dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+                    <button data-page="page-directory"><i class="fas fa-address-book"></i> Member Directory</button>
+                    <button data-page="page-member" class="admin-only"><i class="fas fa-users-cog"></i> Manage Users</button>
+                    <button data-page="page-savings"><i class="fas fa-wallet"></i> Savings</button>
+                    <button data-page="page-withdrawals"><i class="fas fa-clipboard-check"></i> Withdrawals</button>
+                    <button data-page="page-loans"><i class="fas fa-hand-holding-usd"></i> Loans</button>
+                    <button data-page="page-repayments" class="admin-only"><i class="fas fa-sync-alt"></i> Repayments</button>
+                    <button data-page="page-logs" class="admin-only"><i class="fas fa-shield-alt"></i> Audit Logs</button>
+                    <button data-page="page-profile"><i class="fas fa-user-cog"></i> Account Settings</button>
+                    <button class="danger admin-only" id="resetData"><i class="fas fa-trash-alt"></i> Reset System</button>
+                </nav>
+            </aside>
+
+            <main class="content">
+                <!-- Dashboard -->
+                <section id="page-dashboard" class="page active">
+                    <h2 id="dashboardTitle" style="margin-bottom: 1.5rem; font-weight: 800; letter-spacing: -0.5px;">System Overview</h2>
+                    <div class="dashboard" id="dashboardCards"></div>
+                    <div class="chart-container admin-only treasurer-only">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+                    <div class="chart-container" id="memberChartContainer" style="display: none;">
+                        <canvas id="memberFinanceChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Member Directory -->
+                <section id="page-directory" class="page">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-address-book" style="color: var(--primary);"></i> Member Directory</h2>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead id="directoryTableHead"></thead>
+                                <tbody id="directoryTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Users -->
+                <section id="page-member" class="page admin-only">
+                    <div class="panel">
+                        <h2><i class="fas fa-user-plus" style="color: var(--primary);"></i> Register New User & Member</h2>
+                        <form id="memberForm" class="form-grid" style="margin-top: 1.5rem;">
+                            <label>Username <input id="newUsername" type="text" placeholder="johndoe" required></label>
+                            <label>Password <input id="newPassword" type="password" placeholder="Min 6 chars" minlength="6" required></label>
+                            <label>Full Name <input id="memberName" type="text" placeholder="John Doe" required></label>
+                            <label>Phone Number <input id="memberPhone" type="text" placeholder="0771234567" required></label>
+                            <label>Initial Share Capital (UGX) <input id="memberShare" type="number" min="10000" step="1000" value="50000" required></label>
+                            <button type="submit" class="primary"><i class="fas fa-save"></i> Create Account</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Savings -->
+                <section id="page-savings" class="page">
+                    <div class="panel">
+                        <h2><i class="fas fa-exchange-alt" style="color: var(--primary);"></i> Record Transaction</h2>
+                        <form id="savingsForm" class="form-grid" style="margin-top: 1.5rem;">
+                            <label id="savingsMemberLabel">Member <select id="savingsMember" required></select></label>
+                            <label>Type <select id="transactionType" required></select></label>
+                            <label>Amount (UGX) <input id="transactionAmount" type="number" min="1000" step="1000" required></label>
+                            <label>Note <input id="transactionNote" type="text" placeholder="e.g., Monthly savings"></label>
+                            <button type="submit" class="primary" id="savingsSubmitBtn"><i class="fas fa-check-circle"></i> Submit Transaction</button>
+                        </form>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2>Transaction History</h2>
+                            <button class="export-btn" onclick="exportToCSV('transactions')"><i class="fas fa-file-csv"></i> Export CSV</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Date</th><th>Member</th><th>Type</th><th>Amount (UGX)</th><th>Note</th><th>Receipt</th></tr></thead>
+                                <tbody id="savingsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Withdrawal Requests -->
+                <section id="page-withdrawals" class="page">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-clipboard-check" style="color: var(--warning);"></i> <span id="withdrawalsTitle">Withdrawal Requests</span></h2>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Request ID</th><th>Date</th><th>Member</th><th>Amount (UGX)</th><th>Note</th><th>Status</th><th>Action</th></tr></thead>
+                                <tbody id="withdrawalTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Loans -->
+                <section id="page-loans" class="page">
+                    <div class="panel">
+                        <h2><i class="fas fa-file-invoice-dollar" style="color: var(--success);"></i> Loan Request</h2>
+                        <form id="loanForm" class="form-grid" style="margin-top: 1.5rem;">
+                            <label id="loanMemberLabel">Member <select id="loanMember" required></select></label>
+                            <label>Amount (UGX) <input id="loanAmount" type="number" min="10000" step="1000" required></label>
+                            <label>Interest Rate (%) <input id="loanRate" type="number" min="1" max="50" value="12" required></label>
+                            <label>Term (Months) <input id="loanTerm" type="number" min="1" max="36" value="12" required></label>
+                            <button type="submit" class="primary"><i class="fas fa-paper-plane"></i> Request Loan</button>
+                        </form>
+                        <div id="loanPreview" class="loan-preview">
+                            <h4><i class="fas fa-calculator"></i> Estimated Repayment Preview</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">Monthly Installment:</span>
+                                <span class="preview-amount" id="previewMonthly">UGX 0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.5rem;">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">Total Repayment:</span>
+                                <span style="font-weight: 700; color: var(--text);" id="previewTotal">UGX 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2>Loan Portfolio</h2>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Loan ID</th><th>Member</th><th>Principal</th><th>Rate</th><th>Term</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead>
+                                <tbody id="loanTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Repayments -->
+                <section id="page-repayments" class="page admin-only">
+                    <div class="panel">
+                        <h2><i class="fas fa-money-bill-wave" style="color: var(--success);"></i> Process Loan Repayment</h2>
+                        <form id="repaymentForm" class="form-grid" style="margin-top: 1.5rem;">
+                            <label>Select Active Loan <select id="repaymentLoan" required></select></label>
+                            <label>Repayment Amount (UGX) <input id="repaymentAmount" type="number" min="1000" step="1000" required></label>
+                            <button type="submit" class="primary"><i class="fas fa-check-circle"></i> Submit Repayment</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Audit Logs -->
+                <section id="page-logs" class="page admin-only">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2><i class="fas fa-shield-alt" style="color: var(--primary);"></i> System Audit Logs</h2>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                                <tbody id="logsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Account Settings -->
+                <section id="page-profile" class="page">
+                    <div class="panel" style="max-width: 700px;">
+                        <h2><i class="fas fa-user-cog" style="color: var(--primary);"></i> Account Settings</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">Update your personal information and login credentials.</p>
+                        <form id="profileForm" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <h3 style="font-size: 1.1rem; color: var(--text); margin-bottom: 0.5rem;">Personal Information</h3>
+                            <div class="form-grid">
+                                <label>Full Name <input id="profileName" type="text" required></label>
+                                <label>Phone Number <input id="profilePhone" type="text" required></label>
+                            </div>
+                            <div style="height: 1px; background: var(--border); margin: 1rem 0;"></div>
+                            <h3 style="font-size: 1.1rem; color: var(--text); margin-bottom: 0.5rem;">Login Credentials</h3>
+                            <label>Username <input id="profileNewUsername" type="text" required></label>
+                            <label>Current Password (Required to save changes) <input id="profileCurrentPwd" type="password" placeholder="Enter current password" required></label>
+                            <div class="form-grid">
+                                <label>New Password (Leave blank to keep current) <input id="profileNewPwd" type="password" placeholder="Min 6 characters" minlength="6">
+                                    <div class="password-strength"><div class="password-strength-bar" id="pwdStrengthBar"></div></div>
+                                </label>
+                                <label>Confirm New Password <input id="profileConfirmPwd" type="password" placeholder="Re-enter new password"></label>
+                            </div>
+                            <button type="submit" class="primary" style="margin-top: 1rem; justify-content: center; align-self: flex-start;">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            <p>Bridge Micro Saving System v8.0 Ultra-Premium | 3-Step Secure Withdrawal Workflow Enabled</p>
+        </footer>
+    </div>
+
+    <!-- TOAST & MODALS -->
+    <div id="toastContainer"></div>
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-box">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;"></i>
+            <h3 id="confirmTitle">Are you sure?</h3>
+            <p id="confirmMessage">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="secondary" onclick="closeConfirm()">Cancel</button>
+                <button class="danger-btn" id="confirmYesBtn" style="padding: 0.75rem 2rem;">Confirm</button>
+            </div>
+        </div>
+    </div>
+    <div id="receiptModal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 420px;">
+            <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;"></i>
+            <h3>Transaction Successful</h3>
+            <div class="receipt-box" id="receiptContent"></div>
+            <div class="modal-actions">
+                <button class="primary" onclick="closeReceipt()" style="width: 100%; justify-content: center;">Close Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. PREMIUM UTILITIES ---
+        const Utils = {
+            formatCurrency: (amount) => `UGX ${parseFloat(amount).toLocaleString('en-UG')}`,
+            formatDate: (dateStr) => new Date(dateStr).toLocaleDateString('en-UG', { year: 'numeric', month: 'short', day: 'numeric' }),
+            formatDateTime: () => new Date().toLocaleString('en-UG'),
+            hash: (str) => btoa(str),
+            toast: (message, type = 'success') => {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                const icon = type === 'success' ? 'check-circle' : (type === 'error' ? 'times-circle' : 'exclamation-circle');
+                const color = type === 'success' ? 'var(--success)' : (type === 'error' ? 'var(--danger)' : 'var(--warning)');
+                toast.innerHTML = `<i class="fas fa-${icon}" style="color: ${color}; font-size: 1.3rem;"></i> <span style="font-weight: 500;">${message}</span>`;
+                container.appendChild(toast);
+                setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%)'; setTimeout(() => toast.remove(), 300); }, 4000);
+            },
+            confirm: (message, title = 'Confirm Action') => {
+                return new Promise((resolve) => {
+                    document.getElementById('confirmTitle').textContent = title;
+                    document.getElementById('confirmMessage').textContent = message;
+                    document.getElementById('confirmModal').classList.add('active');
+                    const yesBtn = document.getElementById('confirmYesBtn');
+                    const cleanup = () => { document.getElementById('confirmModal').classList.remove('active'); yesBtn.onclick = null; };
+                    yesBtn.onclick = () => { cleanup(); resolve(true); };
+                    document.getElementById('confirmModal').onclick = (e) => { if (e.target.id === 'confirmModal') { cleanup(); resolve(false); } };
+                });
+            }
+        };
+
+        // --- 2. STATE MANAGEMENT ---
+        const STORAGE_KEY = 'bridge_micro_saving_v8_final';
+        let state = {
+            users: [
+                { id: 'U001', username: 'lubega', password: Utils.hash('admin123'), role: 'admin', memberId: 'M001', name: 'Lubega Umar' },
+                { id: 'U002', username: 'mercy', password: Utils.hash('treasurer123'), role: 'treasurer', memberId: 'M002', name: 'Mercy' },
+                { id: 'U003', username: 'kimera', password: Utils.hash('member123'), role: 'member', memberId: 'M003', name: 'Kimera Abdulhakim' },
+                { id: 'U004', username: 'auntbetty', password: Utils.hash('member123'), role: 'member', memberId: 'M004', name: 'Aunt Betty' },
+                { id: 'U005', username: 'wankya', password: Utils.hash('member123'), role: 'member', memberId: 'M005', name: 'Wankya Dismas' }
+            ],
+            members: [
+                { id: 'M001', name: 'Lubega Umar', phone: '0771111111', share: 150000, savings: 300000, joined: '2026-01-15' },
+                { id: 'M002', name: 'Mercy', phone: '0772222222', share: 150000, savings: 400000, joined: '2026-01-15' },
+                { id: 'M003', name: 'Kimera Abdulhakim', phone: '0773333333', share: 50000, savings: 100000, joined: '2026-07-16' },
+                { id: 'M004', name: 'Aunt Betty', phone: '0774444444', share: 50000, savings: 150000, joined: '2026-07-16' },
+                { id: 'M005', name: 'Wankya Dismas', phone: '0775555555', share: 50000, savings: 80000, joined: '2026-07-16' }
+            ],
+            transactions: [], loans: [], withdrawalRequests: [], logs: [],
+            currentUser: null, theme: 'light'
+        };
+        let financeChart = null, memberFinanceChart = null;
+
+        // --- 3. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData(); applyTheme(); setupLogin();
+        });
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                state = { ...state, ...JSON.parse(saved) };
+                if (!state.withdrawalRequests) state.withdrawalRequests = [];
+                if (!state.logs) state.logs = [];
+            }
+        }
+
+        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); renderAll(); }
+
+        function logAction(action, details) {
+            state.logs.unshift({ timestamp: Utils.formatDateTime(), user: state.currentUser ? state.currentUser.username : 'System', action, details });
+            if (state.logs.length > 500) state.logs.pop();
+        }
+
+        function setupLogin() {
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const user = state.users.find(u => u.username === document.getElementById('loginUsername').value && u.password === Utils.hash(document.getElementById('loginPassword').value));
+                if (user) {
+                    state.currentUser = user;
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('appContainer').style.display = 'flex';
+                    updateHeaderDisplay(); logAction('LOGIN', `User ${user.username} logged in`);
+                    applyRoleBasedUI(); setupNavigation(); setupForms(); renderAll();
+                    Utils.toast(`Welcome back, ${user.name}!`, 'success');
+                } else { Utils.toast('Invalid username or password.', 'error'); }
+            });
+
+            document.getElementById('logoutButton').addEventListener('click', () => {
+                logAction('LOGOUT', `User ${state.currentUser.username} logged out`);
+                state.currentUser = null;
+                document.getElementById('appContainer').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('loginForm').reset();
+            });
+
+            document.getElementById('resetData').addEventListener('click', async () => {
+                if (await Utils.confirm('This will permanently delete ALL system data.', '⚠️ Critical Warning')) {
+                    localStorage.removeItem(STORAGE_KEY); location.reload();
+                }
+            });
+
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                state.theme = state.theme === 'light' ? 'dark' : 'light';
+                applyTheme(); saveData();
+            });
+        }
+
+        function updateHeaderDisplay() {
+            const user = state.currentUser;
+            let badgeClass = user.role === 'admin' ? 'admin' : (user.role === 'treasurer' ? 'treasurer' : 'member');
+            document.getElementById('currentUserDisplay').innerHTML = `${user.name} <span class="role-badge ${badgeClass}"><i class="fas fa-circle" style="font-size: 6px;"></i> ${user.role}</span>`;
+        }
+
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', state.theme);
+            document.querySelector('#themeToggle i').className = state.theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        function applyRoleBasedUI() {
+            const role = state.currentUser.role;
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = role === 'admin' ? '' : 'none');
+
+            if (role === 'member') {
+                document.getElementById('dashboardTitle').textContent = 'My Financial Overview';
+                document.getElementById('savingsMemberLabel').innerHTML = `Member <input type="text" value="${state.currentUser.name}" disabled style="background: var(--surface-hover); color: var(--text-muted); cursor: not-allowed;">`;
+                document.getElementById('loanMemberLabel').innerHTML = `Member <input type="text" value="${state.currentUser.name}" disabled style="background: var(--surface-hover); color: var(--text-muted); cursor: not-allowed;">`;
+                document.getElementById('memberChartContainer').style.display = 'block';
+                
+                document.getElementById('transactionType').innerHTML = `
+                    <option value="Deposit">Deposit Funds</option>
+                    <option value="Withdraw">Request Withdrawal (Requires Approval)</option>
+                `;
+                document.getElementById('withdrawalsTitle').textContent = 'My Withdrawal Requests';
+            } else {
+                document.getElementById('dashboardTitle').textContent = (role === 'admin' ? 'System Overview' : 'Treasurer Dashboard');
+                document.getElementById('memberChartContainer').style.display = 'none';
+                document.getElementById('transactionType').innerHTML = `
+                    <option value="Deposit">Deposit</option>
+                    <option value="Withdraw">Withdraw (Instant)</option>
+                `;
+                document.getElementById('withdrawalsTitle').textContent = 'All Withdrawal Requests';
+            }
+        }
+
+        function getMyMemberRecord() { return state.members.find(m => m.id === state.currentUser.memberId); }
+
+        function setupNavigation() {
+            document.querySelectorAll('.sidebar button[data-page]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.getElementById(btn.dataset.page).classList.add('active');
+                    if (btn.dataset.page === 'page-dashboard') {
+                        setTimeout(() => { if (state.currentUser.role !== 'member') renderChart(); else renderMemberChart(); }, 100);
+                    }
+                });
+            });
+        }
+
+        // --- 4. FORM HANDLERS ---
+        function setupForms() {
+            const role = state.currentUser.role;
+            const isAdmin = role === 'admin';
+
+            document.getElementById('transactionType').addEventListener('change', function() {
+                const btn = document.getElementById('savingsSubmitBtn');
+                if (this.value === 'Withdraw' && role === 'member') {
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Withdrawal Request';
+                } else {
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Submit Transaction';
+                }
+            });
+
+            if (isAdmin) {
+                document.getElementById('memberForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('newUsername').value;
+                    if (state.users.find(u => u.username === username)) { Utils.toast('Username exists!', 'error'); return; }
+                    const newMemberId = 'M' + String(state.members.length + 1).padStart(3, '0');
+                    const newUserId = 'U' + String(state.users.length + 1).padStart(3, '0');
+                    const name = document.getElementById('memberName').value;
+                    const phone = document.getElementById('memberPhone').value;
+                    const share = parseFloat(document.getElementById('memberShare').value);
+                    const today = new Date().toISOString().split('T')[0];
+
+                    state.users.push({ id: newUserId, username, password: Utils.hash(document.getElementById('newPassword').value), role: 'member', memberId: newMemberId, name });
+                    state.members.push({ id: newMemberId, name, phone, share, savings: 0, joined: today });
+                    state.transactions.push({ id: 'T' + String(state.transactions.length + 1).padStart(3, '0'), date: today, memberId: newMemberId, member: name, type: 'Share Capital', amount: share, note: 'Initial registration' });
+                    logAction('USER_CREATED', `Created member ${name}`);
+                    saveData(); e.target.reset(); Utils.toast(`User & Member ${name} created!`, 'success');
+                });
+            }
+
+            document.getElementById('savingsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const memberId = isAdmin ? document.getElementById('savingsMember').value : state.currentUser.memberId;
+                const type = document.getElementById('transactionType').value;
+                const amount = parseFloat(document.getElementById('transactionAmount').value);
+                const note = document.getElementById('transactionNote').value || '-';
+                const member = state.members.find(m => m.id === memberId);
+                const today = new Date().toISOString().split('T')[0];
+
+                if (type === 'Deposit') {
+                    member.savings += amount;
+                    const txId = 'T' + String(state.transactions.length + 1).padStart(3, '0');
+                    state.transactions.push({ id: txId, date: today, memberId, member: member.name, type: 'Deposit', amount, note });
+                    logAction('DEPOSIT', `Deposited ${Utils.formatCurrency(amount)} to ${member.name}`);
+                    saveData(); e.target.reset();
+                    showReceipt({ id: txId, date: today, member: member.name, type: 'Deposit', amount, note });
+                    Utils.toast(`Deposit recorded!`, 'success');
+                } else { // Withdraw
+                    if (member.savings < amount) { Utils.toast('Insufficient balance.', 'error'); return; }
+                    
+                    if (role === 'member') {
+                        const reqId = 'W' + String(state.withdrawalRequests.length + 1).padStart(3, '0');
+                        state.withdrawalRequests.push({ id: reqId, memberId, memberName: member.name, amount, note, date: today, status: 'Pending' });
+                        logAction('WITHDRAWAL_REQUESTED', `${member.name} requested ${Utils.formatCurrency(amount)}`);
+                        saveData(); e.target.reset();
+                        Utils.toast(`Withdrawal request submitted! The Treasurer will review it shortly.`, 'warning');
+                    } else {
+                        if (await Utils.confirm(`Process instant withdrawal of ${Utils.formatCurrency(amount)}?`)) {
+                            member.savings -= amount;
+                            const txId = 'T' + String(state.transactions.length + 1).padStart(3, '0');
+                            state.transactions.push({ id: txId, date: today, memberId, member: member.name, type: 'Withdraw', amount, note: note + ' (Instant)' });
+                            logAction('WITHDRAWAL_APPROVED_INSTANT', `Instant withdrawal for ${member.name}`);
+                            saveData(); e.target.reset();
+                            showReceipt({ id: txId, date: today, member: member.name, type: 'Withdraw', amount, note });
+                            Utils.toast(`Instant withdrawal processed.`, 'success');
+                        }
+                    }
+                }
+            });
+
+            ['loanAmount', 'loanRate', 'loanTerm'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    const amount = parseFloat(document.getElementById('loanAmount').value) || 0;
+                    const rate = parseFloat(document.getElementById('loanRate').value) || 0;
+                    const term = parseInt(document.getElementById('loanTerm').value) || 0;
+                    if (amount > 0 && rate > 0 && term > 0) {
+                        const total = amount + (amount * (rate / 100) * (term / 12));
+                        document.getElementById('previewMonthly').textContent = Utils.formatCurrency(total / term);
+                        document.getElementById('previewTotal').textContent = Utils.formatCurrency(total);
+                        document.getElementById('loanPreview').style.display = 'block';
+                    } else { document.getElementById('loanPreview').style.display = 'none'; }
+                });
+            });
+
+            document.getElementById('loanForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const memberId = isAdmin ? document.getElementById('loanMember').value : state.currentUser.memberId;
+                const amount = parseFloat(document.getElementById('loanAmount').value);
+                const rate = parseFloat(document.getElementById('loanRate').value);
+                const term = parseInt(document.getElementById('loanTerm').value);
+                const member = state.members.find(m => m.id === memberId);
+                if (amount > (member.savings + member.share) * 3) { Utils.toast('Loan exceeds 3x equity limit.', 'error'); return; }
+
+                const totalRepayment = amount + (amount * (rate / 100) * (term / 12));
+                const loanId = 'L' + String(state.loans.length + 1).padStart(3, '0');
+                state.loans.push({ id: loanId, memberId, memberName: member.name, amount, rate, term, balance: totalRepayment, originalBalance: totalRepayment, status: 'Pending', date: new Date().toISOString().split('T')[0] });
+                logAction('LOAN_REQUESTED', `${member.name} requested loan ${loanId}`);
+                saveData(); e.target.reset(); document.getElementById('loanPreview').style.display = 'none';
+                Utils.toast(`Loan requested!`, 'success');
+            });
+
+            if (isAdmin) {
+                document.getElementById('repaymentForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const loanId = document.getElementById('repaymentLoan').value;
+                    const amount = parseFloat(document.getElementById('repaymentAmount').value);
+                    const loan = state.loans.find(l => l.id === loanId);
+                    if (amount > loan.balance) { Utils.toast('Exceeds balance.', 'error'); return; }
+                    if (await Utils.confirm(`Process repayment of ${Utils.formatCurrency(amount)}?`)) {
+                        loan.balance -= amount;
+                        if (loan.balance <= 0.01) { loan.balance = 0; loan.status = 'Cleared'; }
+                        const txId = 'T' + String(state.transactions.length + 1).padStart(3, '0');
+                        state.transactions.push({ id: txId, date: new Date().toISOString().split('T')[0], memberId: loan.memberId, member: loan.memberName, type: 'Loan Repayment', amount, note: `Repayment for ${loanId}` });
+                        logAction('LOAN_REPAYMENT', `Processed repayment for ${loanId}`);
+                        saveData(); e.target.reset();
+                        showReceipt({ id: txId, date: new Date().toISOString().split('T')[0], member: loan.memberName, type: 'Loan Repayment', amount, note: `Loan ${loanId}` });
+                        Utils.toast(`Repayment recorded!`, 'success');
+                    }
+                });
+            }
+
+            // Profile Management
+            const myMember = getMyMemberRecord();
+            document.getElementById('profileName').value = state.currentUser.name;
+            document.getElementById('profilePhone').value = myMember ? myMember.phone : '';
+            document.getElementById('profileNewUsername').value = state.currentUser.username;
+
+            document.getElementById('profileNewPwd').addEventListener('input', function() {
+                const val = this.value; const bar = document.getElementById('pwdStrengthBar'); let strength = 0;
+                if (val.length >= 6) strength += 25; if (val.length >= 10) strength += 25;
+                if (/[A-Z]/.test(val)) strength += 25; if (/[0-9]/.test(val)) strength += 25;
+                bar.style.width = strength + '%';
+                bar.style.backgroundColor = strength < 50 ? 'var(--danger)' : (strength < 75 ? 'var(--warning)' : 'var(--success)');
+            });
+
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (Utils.hash(document.getElementById('profileCurrentPwd').value) !== state.currentUser.password) { Utils.toast('Current password is incorrect.', 'error'); return; }
+                const newName = document.getElementById('profileName').value.trim();
+                const newPhone = document.getElementById('profilePhone').value.trim();
+                const newUsername = document.getElementById('profileNewUsername').value.trim();
+                const newPwd = document.getElementById('profileNewPwd').value;
+                const confirmPwd = document.getElementById('profileConfirmPwd').value;
+
+                if (newPwd && newPwd !== confirmPwd) { Utils.toast('Passwords do not match.', 'error'); return; }
+                if (state.users.find(u => u.username === newUsername && u.id !== state.currentUser.id)) { Utils.toast('Username taken.', 'error'); return; }
+
+                if (await Utils.confirm('Save these changes to your profile?', 'Update Profile')) {
+                    const userIndex = state.users.findIndex(u => u.id === state.currentUser.id);
+                    state.users[userIndex].username = newUsername; state.users[userIndex].name = newName;
+                    if (newPwd) state.users[userIndex].password = Utils.hash(newPwd);
+                    if (myMember) {
+                        const memberIndex = state.members.findIndex(m => m.id === myMember.id);
+                        state.members[memberIndex].name = newName; state.members[memberIndex].phone = newPhone;
+                    }
+                    state.currentUser.username = newUsername; state.currentUser.name = newName;
+                    if (newPwd) state.currentUser.password = Utils.hash(newPwd);
+
+                    logAction('PROFILE_UPDATED', `User ${newUsername} updated profile`);
+                    saveData(); updateHeaderDisplay();
+                    Utils.toast('Profile updated successfully!', 'success');
+                    document.getElementById('profileCurrentPwd').value = ''; document.getElementById('profileNewPwd').value = '';
+                    document.getElementById('profileConfirmPwd').value = ''; document.getElementById('pwdStrengthBar').style.width = '0%';
+                }
+            });
+        }
+
+        // --- 5. RENDERING & UI ---
+        function renderAll() { renderDashboard(); renderTables(); populateDropdowns(); }
+
+        function renderDashboard() {
+            const role = state.currentUser.role;
+            const container = document.getElementById('dashboardCards');
+            if (role === 'admin' || role === 'treasurer') {
+                const totalEquity = state.members.reduce((sum, m) => sum + m.savings + m.share, 0);
+                const outstanding = state.loans.filter(l => l.status === 'Active').reduce((sum, l) => sum + l.balance, 0);
+                const pending = state.withdrawalRequests.filter(r => r.status === 'Pending').length;
+                container.innerHTML = `
+                    <div class="card card-premium"><div class="card-icon"><i class="fas fa-users"></i></div><div class="label">Total Members</div><div class="value">${state.members.length}</div></div>
+                    <div class="card card-premium gold"><div class="card-icon"><i class="fas fa-coins"></i></div><div class="label">Total System Equity</div><div class="value">${Utils.formatCurrency(totalEquity)}</div></div>
+                    <div class="card card-premium"><div class="card-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="label">Outstanding Loans</div><div class="value">${Utils.formatCurrency(outstanding)}</div></div>
+                    <div class="card card-premium" style="border-top-color: var(--warning);"><div class="card-icon" style="color: var(--warning); background: var(--warning-bg);"><i class="fas fa-clock"></i></div><div class="label">Pending Withdrawals</div><div class="value">${pending}</div></div>
+                `;
+                if (role === 'admin') setTimeout(renderChart, 50);
+            } else {
+                const myMember = getMyMemberRecord();
+                const totalEquity = myMember.savings + myMember.share;
+                container.innerHTML = `
+                    <div class="card card-premium"><div class="card-icon"><i class="fas fa-id-card"></i></div><div class="label">My Share Capital</div><div class="value">${Utils.formatCurrency(myMember.share)}</div></div>
+                    <div class="card card-premium gold"><div class="card-icon"><i class="fas fa-wallet"></i></div><div class="label">My Savings Balance</div><div class="value">${Utils.formatCurrency(myMember.savings)}</div></div>
+                    <div class="card card-premium"><div class="card-icon"><i class="fas fa-chart-line"></i></div><div class="label">My Total Equity</div><div class="value">${Utils.formatCurrency(totalEquity)}</div></div>
+                    <div class="card card-premium" style="border-top-color: var(--warning);"><div class="card-icon" style="color: var(--warning); background: var(--warning-bg);"><i class="fas fa-clock"></i></div><div class="label">My Pending Requests</div><div class="value">${state.withdrawalRequests.filter(r => r.memberId === myMember.id && r.status === 'Pending').length}</div></div>
+                `;
+                setTimeout(renderMemberChart, 50);
+            }
+        }
+
+        function renderChart() {
+            if (financeChart) financeChart.destroy();
+            financeChart = new Chart(document.getElementById('financeChart').getContext('2d'), {
+                type: 'bar', data: { labels: ['Total Member Equity', 'Outstanding Loans'], datasets: [{ data: [state.members.reduce((s, m) => s + m.savings + m.share, 0), state.loans.filter(l => l.status === 'Active').reduce((s, l) => s + l.balance, 0)], backgroundColor: ['rgba(79, 70, 229, 0.8)', 'rgba(217, 119, 6, 0.8)'], borderRadius: 8, barThickness: 60 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function renderMemberChart() {
+            if (memberFinanceChart) memberFinanceChart.destroy();
+            const myMember = getMyMemberRecord();
+            memberFinanceChart = new Chart(document.getElementById('memberFinanceChart').getContext('2d'), {
+                type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Savings Growth', data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map((_, i) => myMember.share + (myMember.savings * ((i + 1) / 6))), borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.1)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function renderTables() {
+            const role = state.currentUser.role;
+            const isAdmin = role === 'admin';
+            const isPrivileged = isAdmin || role === 'treasurer';
+            const myMemberId = state.currentUser.memberId;
+
+            // Directory
+            let headHtml = `<tr><th>Name</th><th>Username</th><th>Phone</th><th>Join Date</th>${isPrivileged ? '<th>Share Capital</th><th>Savings</th><th>Total Equity</th>' : ''}</tr>`;
+            document.getElementById('directoryTableHead').innerHTML = headHtml;
+            document.getElementById('directoryTableBody').innerHTML = state.members.map(m => {
+                const u = state.users.find(user => user.memberId === m.id);
+                let financeCols = isPrivileged ? `<td>${Utils.formatCurrency(m.share)}</td><td>${Utils.formatCurrency(m.savings)}</td><td style="font-weight:800; color: var(--primary);">${Utils.formatCurrency(m.share + m.savings)}</td>` : '';
+                return `<tr><td style="font-weight: 600;">${m.name}</td><td>${u ? u.username : 'N/A'}</td><td>${m.phone}</td><td>${Utils.formatDate(m.joined)}</td>${financeCols}</tr>`;
+            }).join('');
+
+            // Withdrawals (Filtered by Role & 3-Step Workflow)
+            const myReqs = isPrivileged ? state.withdrawalRequests : state.withdrawalRequests.filter(r => r.memberId === myMemberId);
+            document.getElementById('withdrawalTableBody').innerHTML = myReqs.slice().reverse().map(r => {
+                let action = '';
+                let statusClass = r.status.toLowerCase().replace('awaiting_confirmation', 'awaiting').replace('completed', 'completed');
+                
+                if (r.status === 'Pending') {
+                    if (isPrivileged) {
+                        action = `<button class="success-btn" onclick="approveWithdrawal('${r.id}')">Approve</button> <button class="danger-btn" onclick="rejectWithdrawal('${r.id}')">Reject</button>`;
+                    } else {
+                        action = `<span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Awaiting Treasurer</span>`;
+                    }
+                } else if (r.status === 'Awaiting_Confirmation') {
+                    if (isPrivileged) {
+                        action = `<span style="font-size:0.8rem; color:var(--primary); font-weight:600;">Approved - Awaiting Member</span>`;
+                    } else {
+                        // MEMBER SEES THE CONFIRM BUTTON HERE
+                        action = `<button class="primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="confirmWithdrawalCollection('${r.id}')"><i class="fas fa-check"></i> Confirm & Collect</button>`;
+                    }
+                } else {
+                    action = `<span class="status-${statusClass}">${r.status === 'Awaiting_Confirmation' ? 'Approved (Pending Collection)' : r.status}</span>`;
+                }
+                
+                return `<tr>
+                    <td><span style="font-family: monospace; font-weight: 600;">${r.id}</span></td>
+                    <td>${Utils.formatDate(r.date)}</td>
+                    <td style="font-weight: 600;">${r.memberName}</td>
+                    <td style="font-weight:700;">${Utils.formatCurrency(r.amount)}</td>
+                    <td style="color: var(--text-secondary); font-size: 0.9rem;">${r.note}</td>
+                    <td><span class="status-${statusClass}">${r.status === 'Awaiting_Confirmation' ? 'Awaiting Confirmation' : r.status}</span></td>
+                    <td>${action}</td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted);">No withdrawal requests.</td></tr>';
+
+            // Transactions
+            const myTx = state.transactions.filter(tx => isPrivileged || tx.memberId === myMemberId).slice(-20).reverse();
+            document.getElementById('savingsTableBody').innerHTML = myTx.map(tx => `
+                <tr><td>${Utils.formatDate(tx.date)}</td><td>${tx.member}</td>
+                <td><span style="color: ${tx.type.includes('Deposit') || tx.type.includes('Capital') ? 'var(--success)' : 'var(--danger)'}; font-weight:700;">${tx.type}</span></td>
+                <td>${Utils.formatCurrency(tx.amount)}</td><td>${tx.note}</td>
+                <td><button class="secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick='showReceipt(${JSON.stringify(tx)})'><i class="fas fa-receipt"></i></button></td></tr>
+            `).join('') || '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No transactions.</td></tr>';
+
+            // Loans
+            const myLoans = state.loans.filter(l => isPrivileged || l.memberId === myMemberId);
+            document.getElementById('loanTableBody').innerHTML = myLoans.map(l => {
+                let action = l.status === 'Pending' && isAdmin ? `<button class="success-btn" onclick="approveLoan('${l.id}')">Approve</button> <button class="danger-btn" onclick="rejectLoan('${l.id}')">Reject</button>` : `<span class="status-${l.status.toLowerCase()}">${l.status}</span>`;
+                return `<tr><td>${l.id}</td><td>${l.memberName}</td><td>${Utils.formatCurrency(l.amount)}</td><td>${l.rate}%</td><td>${l.term} mo</td><td style="font-weight:700;">${Utils.formatCurrency(l.balance)}</td><td><span class="status-${l.status.toLowerCase()}">${l.status}</span></td><td>${action}</td></tr>`;
+            }).join('') || '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--text-muted);">No loans.</td></tr>';
+
+            // Logs
+            if (isAdmin) {
+                document.getElementById('logsTableBody').innerHTML = state.logs.map(log => `<tr><td style="font-size: 0.85rem; color: var(--text-muted);">${log.timestamp}</td><td><span class="role-badge admin">${log.user}</span></td><td>${log.action}</td><td>${log.details}</td></tr>`).join('');
+            }
+        }
+
+        function populateDropdowns() {
+            if (state.currentUser.role === 'admin') {
+                const memOpts = '<option value="">Select Member</option>' + state.members.map(m => `<option value="${m.id}">${m.name} (${m.id})</option>`).join('');
+                document.getElementById('savingsMember').innerHTML = memOpts;
+                document.getElementById('loanMember').innerHTML = memOpts;
+                document.getElementById('repaymentLoan').innerHTML = '<option value="">Select Active Loan</option>' + state.loans.filter(l => l.status === 'Active').map(l => `<option value="${l.id}">${l.id} - ${l.memberName}</option>`).join('');
+            }
+        }
+
+        // --- 6. GLOBAL ACTIONS (3-STEP WITHDRAWAL LOGIC) ---
+        
+        // STEP 2: Treasurer Approves (Does NOT deduct money yet)
+        window.approveWithdrawal = async function(reqId) {
+            const req = state.withdrawalRequests.find(r => r.id === reqId);
+            const member = state.members.find(m => m.id === req.memberId);
+            if (member.savings >= req.amount && await Utils.confirm(`Approve ${Utils.formatCurrency(req.amount)} for ${req.memberName}? They will need to confirm collection.`)) {
+                req.status = 'Awaiting_Confirmation'; // Change status, DO NOT deduct funds
+                logAction('WITHDRAWAL_APPROVED_PENDING_CONFIRM', `Approved ${reqId} for ${Utils.formatCurrency(req.amount)}. Awaiting member confirmation.`);
+                saveData(); Utils.toast('Withdrawal approved. The member must now confirm collection.', 'success');
+            } else { Utils.toast('Error: Member has insufficient funds.', 'error'); }
+        };
+
+        // STEP 3: Member Confirms Collection (Money is deducted & Receipt generated)
+        window.confirmWithdrawalCollection = async function(reqId) {
+            const req = state.withdrawalRequests.find(r => r.id === reqId);
+            if (req && req.status === 'Awaiting_Confirmation') {
+                const member = state.members.find(m => m.id === req.memberId);
+                if (member.savings >= req.amount && await Utils.confirm(`Confirm collection of ${Utils.formatCurrency(req.amount)}? Funds will be deducted and a receipt generated.`)) {
+                    member.savings -= req.amount; // DEDUCT FUNDS HERE
+                    req.status = 'Completed';
+                    
+                    const txId = 'T' + String(state.transactions.length + 1).padStart(3, '0');
+                    state.transactions.push({ id: txId, date: new Date().toISOString().split('T')[0], memberId: req.memberId, member: req.memberName, type: 'Withdraw', amount: req.amount, note: req.note + ' (Collected)' });
+                    
+                    logAction('WITHDRAWAL_COMPLETED', `Member ${req.memberName} collected ${Utils.formatCurrency(req.amount)} for ${reqId}`);
+                    saveData();
+                    
+                    // SHOW RECEIPT TO MEMBER
+                    showReceipt({ id: txId, date: new Date().toISOString().split('T')[0], member: req.memberName, type: 'Withdraw', amount: req.amount, note: req.note });
+                    Utils.toast('Funds collected successfully! Receipt generated.', 'success');
+                } else if (member.savings < req.amount) {
+                    Utils.toast('Error: Insufficient funds at the time of collection.', 'error');
+                }
+            }
+        };
+
+        window.rejectWithdrawal = async function(reqId) {
+            if (await Utils.confirm('Reject this withdrawal request?')) {
+                state.withdrawalRequests.find(r => r.id === reqId).status = 'Rejected';
+                logAction('WITHDRAWAL_REJECTED', `Rejected ${reqId}`);
+                saveData(); Utils.toast('Request rejected.', 'warning');
+            }
+        };
+
+        window.approveLoan = async function(id) {
+            if (await Utils.confirm(`Approve loan ${id}?`)) {
+                state.loans.find(l => l.id === id).status = 'Active';
+                logAction('LOAN_APPROVED', `Approved ${id}`); saveData(); Utils.toast('Loan approved.', 'success');
+            }
+        };
+
+        window.rejectLoan = async function(id) {
+            if (await Utils.confirm('Reject loan?')) {
+                state.loans = state.loans.filter(l => l.id !== id);
+                logAction('LOAN_REJECTED', `Rejected ${id}`); saveData(); Utils.toast('Loan rejected.', 'warning');
+            }
+        };
+
+        window.showReceipt = function(tx) {
+            document.getElementById('receiptContent').innerHTML = `
+                <div style="text-align: center; margin-bottom: 1.5rem; border-bottom: 1px dashed var(--border); padding-bottom: 1rem;">
+                    <strong style="font-size: 1.1rem;">BRIDGE MICRO SAVING</strong><br>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Official Receipt</span>
+                </div>
+                <div class="receipt-row"><span>Receipt ID:</span> <span style="font-weight: 600;">${tx.id || 'N/A'}</span></div>
+                <div class="receipt-row"><span>Date:</span> <span style="font-weight: 600;">${Utils.formatDate(tx.date)}</span></div>
+                <div class="receipt-row"><span>Member:</span> <span style="font-weight: 600;">${tx.member}</span></div>
+                <div class="receipt-row"><span>Type:</span> <span style="font-weight: 600;">${tx.type}</span></div>
+                <div class="receipt-row receipt-total"><span>TOTAL:</span> <span>${Utils.formatCurrency(tx.amount)}</span></div>
+            `;
+            document.getElementById('receiptModal').classList.add('active');
+        };
+
+        window.closeReceipt = () => document.getElementById('receiptModal').classList.remove('active');
+        window.closeConfirm = () => document.getElementById('confirmModal').classList.remove('active');
+
+        window.exportToCSV = function(type) {
+            let data, filename;
+            if (type === 'transactions') {
+                const myTx = (state.currentUser.role !== 'member') ? state.transactions : state.transactions.filter(t => t.memberId === state.currentUser.memberId);
+                data = myTx.map(t => `${t.date},"${t.member}",${t.type},${t.amount},"${t.note}"`);
+                data.unshift('Date,Member,Type,Amount,Note');
+                filename = 'bridge_transactions.csv';
+            }
+            const blob = new Blob([data.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a'); a.href = window.URL.createObjectURL(blob); a.download = filename; a.click();
+            Utils.toast('Export downloaded.', 'success');
+        };
+    </script>
+</body>
+</html>
